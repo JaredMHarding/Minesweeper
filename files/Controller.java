@@ -24,6 +24,7 @@ public class Controller {
         minefieldGP.setGridLinesVisible(true);
         difficultyCB.setItems(FXCollections.observableArrayList("Easy","Medium","Hard"));
         nonminesLabel.setText("");
+        // makes all of the buttons
         int mfHeight = minefieldGP.getRowConstraints().size();
         int mfWidth = minefieldGP.getColumnConstraints().size();
         for (int i = 0;i < mfWidth;i++) {
