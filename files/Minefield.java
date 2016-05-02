@@ -1,5 +1,7 @@
 package files;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 import java.lang.Math;
 
 /**
@@ -15,6 +17,7 @@ public class Minefield {
     public final int UNEXPOSED = 0;
     public final int EXPOSED = 1;
     public final int MARKED = 2;
+    private final int PENDING = 3;
 
     /**
      * This is the constructor
@@ -57,41 +60,43 @@ public class Minefield {
 
     /**
      * This method toggles a cell to be marked if it's unexposed, or back to unexposed if it was marked
+     * If it is already exposed, it does nothing
      * @param column
      * @param row
      * @return
      */
-    public void toggleMarked(int column, int row) {
+    public int toggleMarked(int column, int row) {
         // if it's already marked, change it to unmarked
         if (cellState[column][row] == MARKED) {
             cellState[column][row] = UNEXPOSED;
         }
         // if it isn't marked yet, mark it
-        if (cellState[column][row] == UNEXPOSED) {
+        else if (cellState[column][row] == UNEXPOSED) {
             cellState[column][row] = MARKED;
         }
+        return cellState[column][row];
     }
 
     /**
      * This method will change the state of a cell to exposed
-     * Also, if the cell is a 0, it exposes all of it's neighbors
      * @param column
      * @param row
      * @return
      */
     public int expose(int column, int row) {
         // this function assumes you are calling expose on an unexposed cell!
-        // this will be tested for in the controller!
+        // this will be tested for in the controller
         assert(cellState[column][row] == UNEXPOSED);
 
         // if there are no bombs around it, it will call expose on it's neighbors
         if (numValues[column][row] == 0) {
+            cellState[column][row] = PENDING;
             // iterate through the neighbors
             for (int i = column - 1; i <= column + 1; i++) {
                 for (int j = row - 1; j <= row + 1; j++) {
-                    // if i and j are valid indices and it is not the same cell as the function caller's cell
+                    // if i and j are valid indices and it's not a cell already on the stack
                     if ((i >= 0) && (i < numValues.length) && (j >= 0) && (j < numValues[0].length)
-                            && !((i == column) && (j == row))) {
+                            && (cellState[i][j] == UNEXPOSED)) {
                         // call expose on the neighboring cell
                         expose(i,j);
                     }
@@ -106,11 +111,18 @@ public class Minefield {
         return numValues[column][row];
     }
 
-    public boolean isExposed(int column, int row) {
-        if (cellState[column][row] == EXPOSED) {
-            return true;
-        }
-        return false;
+    /**
+     * This method returns the cell state
+     * @param column
+     * @param row
+     * @return
+     */
+    public int getCellState(int column, int row) {
+        return cellState[column][row];
+    }
+
+    public int getValue(int column, int row) {
+        return numValues[column][row];
     }
 
     public int numUnexposed() {
