@@ -1,3 +1,9 @@
+/**
+ * Jared Harding
+ * CS 224
+ * Project 3 - Minesweeper
+ */
+
 package files;
 
 import javafx.application.Application;
@@ -12,7 +18,9 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Minesweeper");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setMinHeight(825);
+        primaryStage.setMinWidth(900);
+        primaryStage.setScene(new Scene(root, 900, 825));
         primaryStage.show();
     }
 

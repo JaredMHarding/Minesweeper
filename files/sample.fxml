@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
 <GridPane fx:id="windowGP" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="files.Controller">
   <columnConstraints>
@@ -26,14 +27,30 @@
             <Button fx:id="startButton" mnemonicParsing="false" text="Start" />
          </children>
       </HBox>
-      <HBox alignment="TOP_RIGHT" GridPane.columnIndex="2">
+      <VBox GridPane.columnIndex="2">
          <children>
-            <Label fx:id="nonminesLabel" text="Nonmines" />
+            <HBox>
+               <children>
+                  <Label text="Safe cells left to expose: " />
+                  <Label fx:id="nonminesLabel" text="Nonmines" />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="Mines left to mark: " />
+                  <Label fx:id="cellsUnmarked" text="Mines" />
+               </children>
+            </HBox>
          </children>
-      </HBox>
+      </VBox>
       <HBox alignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="2">
          <children>
             <Label fx:id="winloseLabel" text="WinLose" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+         <children>
+            <Label fx:id="instructionsLabel" text="Instructions" />
          </children>
       </HBox>
    </children>

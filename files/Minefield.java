@@ -1,17 +1,19 @@
-package files;
+/**
+ * Jared Harding
+ * CS 224
+ * Project 3 - Minesweeper
+ */
 
-import org.omg.CORBA.PUBLIC_MEMBER;
+package files;
 
 import java.lang.Math;
 
-/**
- * Created by jharding on 4/25/16.
- */
 public class Minefield {
 
     private int[][] numValues;
     private int[][] cellState;
     private int unexposedCount; // this represents the number of unexposed cells that do not have a bomb
+    private int unmarkedCount;
 
     // these final variables represent the different states of the cells
     public final int UNEXPOSED = 0;
@@ -29,6 +31,7 @@ public class Minefield {
         numValues = new int[width][height];
         cellState = new int[width][height];
         unexposedCount = width*height - numBombs;
+        unmarkedCount = numBombs;
         // places the bombs in the cells
         while (numBombs > 0) {
             // computes a random row and column
@@ -69,10 +72,12 @@ public class Minefield {
         // if it's already marked, change it to unmarked
         if (cellState[column][row] == MARKED) {
             cellState[column][row] = UNEXPOSED;
+            unmarkedCount++;
         }
         // if it isn't marked yet, mark it
         else if (cellState[column][row] == UNEXPOSED) {
             cellState[column][row] = MARKED;
+            unmarkedCount--;
         }
         return cellState[column][row];
     }
@@ -112,7 +117,36 @@ public class Minefield {
     }
 
     /**
-     * This method returns the cell state
+     * This method exposes all of the unexposed neighbors of a cell that's already exposed
+     * This skips over cells that are marked
+     *
+     * The purpose of this method is to make exposing cells you know are safe a lot faster
+     * @return returns whether you exposed a mine with this method
+     */
+    public boolean exposeNeighbors(int column, int row) {
+        // the cell must already be exposed for this method
+        assert(cellState[column][row] == EXPOSED);
+
+        boolean mineExposed = false;
+        for (int i = column - 1;i <= column + 1;i++) {
+            for (int j = row - 1;j <= row + 1;j++) {
+                // if i and j are valid indices and it is an unexposed cell
+                if ((i >= 0) && (i < numValues.length) && (j >= 0) && (j < numValues[0].length)
+                        && (cellState[i][j] == UNEXPOSED)) {
+                    expose(i,j);
+                    // if the cell you just exposed was a mine
+                    if (numValues[i][j] == -1) {
+                        // a mine was exposed
+                        mineExposed = true;
+                    }
+                }
+            }
+        }
+        return mineExposed;
+    }
+
+    /**
+     * This method returns the state of the specified cell
      * @param column
      * @param row
      * @return
@@ -121,11 +155,21 @@ public class Minefield {
         return cellState[column][row];
     }
 
+    /**
+     * This method returns the number in the specified cell
+     * @param column
+     * @param row
+     * @return
+     */
     public int getValue(int column, int row) {
         return numValues[column][row];
     }
 
     public int numUnexposed() {
         return unexposedCount;
+    }
+
+    public int numMarked() {
+        return unmarkedCount;
     }
 }
